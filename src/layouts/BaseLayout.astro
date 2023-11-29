@@ -1,0 +1,16 @@
+---
+import Navigation from '../components/Navigation.astro'
+const { title } = Astro.props
+
+---
+
+<html>
+<head>
+  <title>{title} - F1 Fun!</title>
+  <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.css">
+</head>
+  <body>
+    <Navigation />
+    <slot />
+  </body>
+</html>
