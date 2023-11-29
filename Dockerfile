@@ -1,4 +1,4 @@
-FROM node:18-alpine3.16 as base
+FROM node:current-alpine3.17 as base
 WORKDIR /usr/src/app
 EXPOSE 4321
 
