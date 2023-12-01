@@ -67,6 +67,7 @@ model drivers {
   dob         DateTime? @db.Date
   nationality String?   @db.VarChar(255)
   url         String    @unique(map: "url") @default("") @db.VarChar(255)
+  results     results[]
 }
 
 model lapTimes {
@@ -129,24 +130,25 @@ model races {
 }
 
 model results {
-  resultId        Int     @id @default(autoincrement())
-  raceId          Int     @default(0)
-  driverId        Int     @default(0)
-  constructorId   Int     @default(0)
+  resultId        Int      @id @default(autoincrement())
+  raceId          Int      @default(0)
+  driverId        Int      @default(0)
+  constructorId   Int      @default(0)
   number          Int?
-  grid            Int     @default(0)
+  grid            Int      @default(0)
   position        Int?
-  positionText    String  @default("") @db.VarChar(255)
-  positionOrder   Int     @default(0)
-  points          Float   @default(0) @db.Float
-  laps            Int     @default(0)
-  time            String? @db.VarChar(255)
+  positionText    String   @default("") @db.VarChar(255)
+  positionOrder   Int      @default(0)
+  points          Float    @default(0) @db.Float
+  laps            Int      @default(0)
+  time            String?  @db.VarChar(255)
   milliseconds    Int?
   fastestLap      Int?
-  rank            Int?    @default(0)
-  fastestLapTime  String? @db.VarChar(255)
-  fastestLapSpeed String? @db.VarChar(255)
-  statusId        Int     @default(0)
+  rank            Int?     @default(0)
+  fastestLapTime  String?  @db.VarChar(255)
+  fastestLapSpeed String?  @db.VarChar(255)
+  statusId        Int      @default(0)
+  driver          drivers? @relation(fields: [driverId], references: [driverId])
 }
 
 model seasons {

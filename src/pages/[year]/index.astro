@@ -1,0 +1,14 @@
+---
+import type { GetStaticPaths } from "astro";
+import prisma from "@/prisma/db";
+export const getStaticPaths = (async () => {
+  const races = await prisma.races.findMany({});
+  return races.map((race) => {
+    return { params: { year: race.year.toString() } };
+  });
+}) satisfies GetStaticPaths;
+---
+
+<ul>
+  <li><a href="races">Races</a></li>
+</ul>

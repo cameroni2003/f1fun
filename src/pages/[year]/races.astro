@@ -1,0 +1,30 @@
+---
+import type { GetStaticPaths, InferGetStaticParamsType } from "astro";
+import prisma from "@/prisma/db";
+
+export const getStaticPaths = (async () => {
+  const races = await prisma.races.findMany({});
+  return races.map((race) => {
+    return { params: { year: race.year.toString() } };
+  });
+}) satisfies GetStaticPaths;
+
+type Params = InferGetStaticParamsType<typeof getStaticPaths>;
+
+const { year } = Astro.params as Params;
+
+const races = await prisma.races.findMany({ where: { year: parseInt(year) } });
+---
+
+<ul>
+  {
+    races &&
+      races.map((race) => (
+        <ul>
+          <li>
+            <a>{race.name}</a>
+          </li>
+        </ul>
+      ))
+  }
+</ul>

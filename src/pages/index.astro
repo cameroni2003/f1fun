@@ -1,14 +1,15 @@
 ---
-import { PrismaClient, Prisma } from "@prisma/client";
-const prisma = new PrismaClient();
-const drivers = await prisma.drivers.findMany();
-console.log(drivers);
+import prisma from "@/prisma/db";
+
+const years = await prisma.seasons.findMany();
 ---
 
 <h1>Astro</h1>
 {
-  drivers &&
-    drivers.map((driver) => {
-      return <p><a href={`/${driver.driverRef}`}>{driver.forename}</a></p>;
-    })
+  years &&
+    years.map((year) => (
+      <p>
+        <a href={`/${year.year}`}>{year.year}</a>
+      </p>
+    ))
 }
