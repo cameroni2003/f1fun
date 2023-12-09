@@ -1,0 +1,47 @@
+---
+import { type GetStaticPaths } from "astro";
+import { Prisma } from "@prisma/client";
+import prisma from "../../../prisma/db";
+import { boolean } from "astro/zod";
+import BaseLayout from "root/src/layouts/BaseLayout.astro";
+
+export const getStaticPaths = (async () => {
+  const drivers = await prisma.drivers.findMany();
+  console.log("generating paths");
+  return drivers.map((driver) => {
+    return { params: { driverId: driver.driverRef } };
+  });
+}) satisfies GetStaticPaths;
+
+const { driverId } = Astro.params;
+const driver = await prisma.drivers.findMany({
+  include: { results: true },
+});
+---
+
+<BaseLayout>
+  <div>
+    <h1>Driver: {driver?.forename} {driver?.surname}</h1>
+    <div>
+      <h2>Results</h2>
+      <ul>
+        {
+          driver?.results?.map((result) => (
+            <div>
+              <li>{result.raceId}</li>
+              <li>{result.grid}</li>
+              <li>{result.position}</li>
+              <li>{result.points}</li>
+              <li>{result.fastestLap}</li>
+              <li>{result.fastestLapSpeed}</li>
+              <li>{result.time}</li>
+              <li>{result.rank}</li>
+              <li>{result.laps}</li>
+              <li>{result.milliseconds}</li>
+            </div>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</BaseLayout>
