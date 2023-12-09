@@ -3,7 +3,34 @@ import { type GetStaticPaths } from "astro";
 import { Prisma } from "@prisma/client";
 import prisma from "../../../prisma/db";
 import { boolean } from "astro/zod";
-import BaseLayout from "root/src/layouts/BaseLayout.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DataTable from "react-data-table-component";
+import { ListTable } from "root/src/components/ListTable";
+
+const columns = [
+  {
+    name: "Title",
+    selector: (row) => row.title,
+  },
+  {
+    name: "Year",
+    selector: (row) => row.year,
+  },
+];
+
+const data = [
+  {
+    id: 0,
+    title: "Beetlejuice",
+
+    year: "1987",
+  },
+  {
+    id: 1,
+    title: "Ghostbusters",
+    year: "1983",
+  },
+];
 
 export const getStaticPaths = (async () => {
   const drivers = await prisma.drivers.findMany();
@@ -14,34 +41,17 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { driverId } = Astro.params;
-const driver = await prisma.drivers.findMany({
+const drivers = await prisma.drivers.findMany({
   include: { results: true },
+});
+
+const tableData = drivers.map((d) => {
+  return {
+    driverName: `${d.forename} ${d.surname}`,
+  };
 });
 ---
 
 <BaseLayout>
-  <div>
-    <h1>Driver: {driver?.forename} {driver?.surname}</h1>
-    <div>
-      <h2>Results</h2>
-      <ul>
-        {
-          driver?.results?.map((result) => (
-            <div>
-              <li>{result.raceId}</li>
-              <li>{result.grid}</li>
-              <li>{result.position}</li>
-              <li>{result.points}</li>
-              <li>{result.fastestLap}</li>
-              <li>{result.fastestLapSpeed}</li>
-              <li>{result.time}</li>
-              <li>{result.rank}</li>
-              <li>{result.laps}</li>
-              <li>{result.milliseconds}</li>
-            </div>
-          ))
-        }
-      </ul>
-    </div>
-  </div>
+  <DataTable client:only="react" columns={columns} data={data} />
 </BaseLayout>
