@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths, InferGetStaticParamsType } from "astro";
-import prisma from "@/prisma/db";
+import prisma from "root/prisma/db";
+import { Prisma as PrismaTypes } from "@prisma/client";
 
 export const getStaticPaths = (async () => {
   const races = await prisma.races.findMany({});

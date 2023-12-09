@@ -1,15 +1,18 @@
 ---
-import prisma from "@/prisma/db";
+import prisma from "root/prisma/db";
+import BaseLayout from "root/src/layouts/BaseLayout.astro";
 
 const years = await prisma.seasons.findMany();
 ---
 
-<h1>Astro</h1>
-{
-  years &&
-    years.map((year) => (
-      <p>
-        <a href={`/${year.year}`}>{year.year}</a>
-      </p>
-    ))
-}
+<BaseLayout>
+  <h1>Astro</h1>
+  {
+    years &&
+      years.map((year) => (
+        <p>
+          <a href={`/${year.year}`}>{year.year}</a>
+        </p>
+      ))
+  }
+</BaseLayout>
