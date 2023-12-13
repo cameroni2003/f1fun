@@ -4,32 +4,24 @@ import { Prisma } from "@prisma/client";
 import prisma from "../../../prisma/db";
 import { boolean } from "astro/zod";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import DataTable from "react-data-table-component";
+import DataTable, { type TableColumn } from "react-data-table-component";
 import { ListTable } from "root/src/components/ListTable";
 
-const columns = [
-  {
-    name: "Title",
-    selector: (row) => row.title,
-  },
-  {
-    name: "Year",
-    selector: (row) => row.year,
-  },
-];
+type DataRow = {
+  driverName: string;
+};
 
-const data = [
+const columns: TableColumn<DataRow>[] = [
   {
-    id: 0,
-    title: "Beetlejuice",
-
-    year: "1987",
+    id: "driverName",
+    name: "Titles",
+    //selector: "driverName",
+    selector: (row) => row["driverName"],
   },
-  {
-    id: 1,
-    title: "Ghostbusters",
-    year: "1983",
-  },
+  // {
+  //   name: "Year",
+  //   selector: "year",
+  // },
 ];
 
 export const getStaticPaths = (async () => {
@@ -45,13 +37,40 @@ const drivers = await prisma.drivers.findMany({
   include: { results: true },
 });
 
-const tableData = drivers.map((d) => {
+const tableData: DataRow[] = drivers.map((d) => {
   return {
+    id: d.driverId,
     driverName: `${d.forename} ${d.surname}`,
   };
 });
 ---
 
 <BaseLayout>
-  <DataTable client:only="react" columns={columns} data={data} />
+  <!-- <DataTable -->
+  <!--   columns={columns} -->
+  <!--   data={tableData} -->
+  <!--   client:only="react" -->
+  <!--   onRowClicked={({ driverName }) => { -->
+  <!--     console.log("clicked"); -->
+  <!--   }} -->
+  <!-- /> -->
+  <table>
+    <thead><tr><th>name</th><th>nation</th><th>age</th></tr></thead>
+    <tbody>
+      {
+        drivers &&
+          drivers.map((driver) => (
+            <tr>
+              <td>
+                <a
+                  href={`/drivers/${driver.driverRef}`}
+                >{`${driver.forename} ${driver.surname}`}</a>
+              </td>
+              <td>{`${driver.nationality}`}</td>
+              <td>{`${new Date(driver.dob!).toDateString()}`}</td>
+            </tr>
+          ))
+      }
+    </tbody>
+  </table>
 </BaseLayout>

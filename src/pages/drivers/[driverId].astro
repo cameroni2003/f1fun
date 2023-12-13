@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths } from "astro";
+import prisma from "root/prisma/db";
+
+export const getStaticPaths = (async () => {
+  const drivers = await prisma.drivers.findMany({});
+  return drivers.map((driver) => {
+    return {
+      params: {
+        driverId: driver.driverRef,
+      },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const { driverId } = Astro.params;
+const driver = await prisma.drivers.findFirst({
+  where: {
+    driverRef: driverId,
+  },
+});
+---
+
+<h1>{driver?.forename} {driver?.surname}</h1>

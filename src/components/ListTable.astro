@@ -1,0 +1,10 @@
+---
+import DataTable from "react-data-table-component";
+interface Props {
+  data: any;
+  columns: any;
+}
+const { data, columns } = Astro.props;
+---
+
+<DataTable data={data} columns={columns} client:only="react" />
